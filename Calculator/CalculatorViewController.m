@@ -121,7 +121,8 @@
         }
     } else {
         [self.brain pushOperand:-1];
-        [self.brain performOperation:@"*"];
+        double result = [self.brain performOperation:@"*"];
+        self.display.text = [NSString stringWithFormat:@"%g", result];
         [self addHistory:@"+/-"];
         [self showEquals];
     }
