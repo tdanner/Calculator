@@ -10,7 +10,6 @@
 #import "CalculatorBrain.h"
 
 #define contains(str1, str2) ([str1 rangeOfString: str2 ].location != NSNotFound)
-#define MAX_HISTORY_LENGTH  50
 
 @interface CalculatorViewController()
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringANumber;
@@ -41,20 +40,6 @@
     }
 }
 
-- (BOOL)equalsShown {
-    return [self.history.text characterAtIndex:self.history.text.length - 1] == '=';
-}
-
-- (void)showEquals {
-    if (![self equalsShown])
-        self.history.text = [self.history.text stringByAppendingString:@" ="];
-}
-
-- (void)hideEquals {
-    if ([self equalsShown])
-        self.history.text = [self.history.text substringToIndex:self.history.text.length - 2];
-}
-
 - (IBAction)digitPressed:(UIButton *)sender {
     NSString *digit = sender.currentTitle;
     if (self.userIsInTheMiddleOfEnteringANumber) {
@@ -62,7 +47,6 @@
     } else {
         self.display.text = digit;
         self.userIsInTheMiddleOfEnteringANumber = YES;
-        [self hideEquals];
     }
 }
 
@@ -74,22 +58,12 @@
     } else {
         self.display.text = @"0.";
         self.userIsInTheMiddleOfEnteringANumber = YES;
-        [self hideEquals];
     }        
-}
-
-- (void)addHistory:(NSObject *)item {
-    [self hideEquals];
-    self.history.text = [self.history.text stringByAppendingFormat:@" %@", item];
-
-    if (self.history.text.length > MAX_HISTORY_LENGTH) {
-        self.history.text = [self.history.text substringFromIndex:self.history.text.length - MAX_HISTORY_LENGTH];
-    }
 }
 
 - (IBAction)enterPressed {
     [self.brain pushOperand:[self.display.text doubleValue]];
-    [self addHistory:self.display.text];
+    self.history.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
     self.userIsInTheMiddleOfEnteringANumber = NO;
 }
 
@@ -98,10 +72,9 @@
         [self enterPressed];
     }
     NSString *operation = [sender currentTitle];
-    [self addHistory:operation];
     double result = [self.brain performOperation:operation];
+    self.history.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
     self.display.text = [NSString stringWithFormat:@"%g", result];
-    [self showEquals];
 }
 
 - (IBAction)clearPressed {
@@ -109,7 +82,6 @@
     self.display.text = @"0";
     self.history.text = @"";
     self.userIsInTheMiddleOfEnteringANumber = NO;
-    [self hideEquals];
 }
 
 - (IBAction)plusMinusPressed {
@@ -123,8 +95,7 @@
         [self.brain pushOperand:-1];
         double result = [self.brain performOperation:@"*"];
         self.display.text = [NSString stringWithFormat:@"%g", result];
-        [self addHistory:@"+/-"];
-        [self showEquals];
+        self.history.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
     }
 }
 

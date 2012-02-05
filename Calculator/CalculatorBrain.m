@@ -3,7 +3,7 @@
 //  Calculator
 //
 //  Created by Tim Danner on 1/27/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Tim Danner. All rights reserved.
 //
 
 #import "CalculatorBrain.h"
@@ -16,6 +16,8 @@
 
 @synthesize programStack = _programStack;
 
+static NSDictionary *_operations = nil;
+
 - (NSMutableArray *)programStack
 {
     if (!_programStack)
@@ -23,18 +25,80 @@
     return _programStack;
 }
 
++ (NSDictionary *)operations
+{
+    if (!_operations)
+        _operations = [NSDictionary dictionaryWithObjectsAndKeys:
+                       [NSNumber numberWithInt:2], @"+", 
+                       [NSNumber numberWithInt:2], @"-", 
+                       [NSNumber numberWithInt:2], @"*", 
+                       [NSNumber numberWithInt:2], @"/", 
+                       [NSNumber numberWithInt:1], @"sin", 
+                       [NSNumber numberWithInt:1], @"cos", 
+                       [NSNumber numberWithInt:1], @"sqrt", 
+                       [NSNumber numberWithInt:0], @"π", 
+                       nil];
+    return _operations;
+}
+
++ (BOOL)isOperation:(NSString *)term
+{
+    return nil != [self.operations objectForKey:term];
+}
+
 - (id)program
 {
     return [self.programStack copy];
 }
+
++ (NSString *)descriptionOfTopOfProgramStack:(NSMutableArray *)stack
+{
+    NSString *result = @"";
+    
+    id topOfStack = [stack lastObject];
+    if (topOfStack) [stack removeLastObject];
+    
+    if ([topOfStack isKindOfClass:[NSNumber class]])
+    {
+        result = [topOfStack description];
+    }
+    else if ([topOfStack isKindOfClass:[NSString class]])
+    {
+        NSString *str = topOfStack;
+        NSNumber *operationArgCount = [self.operations objectForKey:str];
+        int numArgs = [operationArgCount intValue];
+        if (operationArgCount == nil) {
+            result = str;
+        } else if (numArgs == 0) {
+            result = str;
+        } else if (numArgs == 1) {
+            result = [NSString stringWithFormat:@"%@(%@)", str, [self descriptionOfTopOfProgramStack:stack]];
+        } else {
+            result = [NSString stringWithFormat:@"%@ %@ %@", [self descriptionOfTopOfProgramStack:stack], str, [self descriptionOfTopOfProgramStack:stack]];
+        }
+    }
+    
+    return result;
+}
+
 + (NSString *)descriptionOfProgram:(id)program
 {
-    return @"Implement this in Homework #2";
+    NSMutableArray *stack;
+    if ([program isKindOfClass:[NSArray class]]) {
+        stack = [program mutableCopy];
+    }
+
+    return [self descriptionOfTopOfProgramStack:stack];
 }
 
 - (void)pushOperand:(double)operand
 {
     [self.programStack addObject:[NSNumber numberWithDouble:operand]];
+}
+
+- (void)pushVariable:(NSString *)variableName
+{
+    [self.programStack addObject:variableName];
 }
 
 - (double)performOperation:(NSString *)operation
@@ -87,11 +151,34 @@
 
 + (double)runProgram:(id)program
 {
+    return [self runProgram:program usingVariableValues:nil];
+}
+
++ (double)runProgram:(id)program usingVariableValues:(NSDictionary *)variableValues
+{
     NSMutableArray *stack;
     if ([program isKindOfClass:[NSArray class]]) {
         stack = [program mutableCopy];
     }
     return [self popOperandOffProgramStack:stack];
+}
+
++ (NSSet *)variablesUsedInProgram:(id)program
+{
+    NSMutableSet *variables = [[NSMutableSet alloc] init];
+    
+    NSMutableArray *stack;
+    if ([program isKindOfClass:[NSArray class]]) {
+        stack = [program mutableCopy];
+    }
+    
+    for (id item in stack) {
+        if ([item isKindOfClass:[NSString class]] && ![self.operations objectForKey:item]) {
+            [variables addObject:item];
+        }
+    }
+    
+    return [variables copy];
 }
 
 - (void)clear
