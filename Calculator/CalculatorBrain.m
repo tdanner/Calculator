@@ -41,6 +41,16 @@ static NSDictionary *_operations = nil;
     return _operations;
 }
 
++ (int)precedenceForOperation:(NSString *)operation
+{
+    if ([operation isEqualToString:@"+"])
+        return 1;
+    else if ([operation isEqualToString:@"-"])
+        return 1;
+    else
+        return 0;
+}
+
 + (BOOL)isOperation:(NSString *)term
 {
     return nil != [self.operations objectForKey:term];
@@ -51,7 +61,8 @@ static NSDictionary *_operations = nil;
     return [self.programStack copy];
 }
 
-+ (NSString *)descriptionOfTopOfProgramStack:(NSMutableArray *)stack
++ (NSString *)descriptionOfTopOfStack:(NSMutableArray *)stack
+                             withPrecendence:(int)precedence
 {
     NSString *result = @"";
     
@@ -72,9 +83,14 @@ static NSDictionary *_operations = nil;
         } else if (numArgs == 0) {
             result = str;
         } else if (numArgs == 1) {
-            result = [NSString stringWithFormat:@"%@(%@)", str, [self descriptionOfTopOfProgramStack:stack]];
+            result = [NSString stringWithFormat:@"%@(%@)", str, [self descriptionOfTopOfStack:stack withPrecendence:0]];
         } else {
-            result = [NSString stringWithFormat:@"%@ %@ %@", [self descriptionOfTopOfProgramStack:stack], str, [self descriptionOfTopOfProgramStack:stack]];
+            int operationPrecedence = [self precedenceForOperation:str];
+            NSString *operand1 = [self descriptionOfTopOfStack:stack withPrecendence:operationPrecedence];
+            NSString *operand2 = [self descriptionOfTopOfStack:stack withPrecendence:operationPrecedence];
+            result = [NSString stringWithFormat:@"%@ %@ %@", operand2, str, operand1];
+            if (precedence < operationPrecedence)
+                result = [NSString stringWithFormat:@"(%@)", result];
         }
     }
     
@@ -88,7 +104,11 @@ static NSDictionary *_operations = nil;
         stack = [program mutableCopy];
     }
 
-    return [self descriptionOfTopOfProgramStack:stack];
+    NSMutableArray *descriptionPieces = [[NSMutableArray alloc] init];
+    while ([stack count] > 0)
+        [descriptionPieces insertObject:[self descriptionOfTopOfStack:stack withPrecendence:1] atIndex:0];
+    
+    return [descriptionPieces componentsJoinedByString:@", "];
 }
 
 - (void)pushOperand:(double)operand
