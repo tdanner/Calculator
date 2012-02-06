@@ -13,6 +13,7 @@
 - (void)pushOperand:(double)operand;
 - (void)pushVariable:(NSString *)variableName;
 - (double)performOperation:(NSString *)operation;
+- (void)pop;
 - (void)clear;
 
 @property (nonatomic, readonly) id program;

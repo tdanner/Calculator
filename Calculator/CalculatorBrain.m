@@ -204,6 +204,11 @@ static NSDictionary *_operations = nil;
     return [variables copy];
 }
 
+- (void)pop
+{
+    [self.programStack removeLastObject];
+}
+
 - (void)clear
 {
     [self.programStack removeAllObjects];

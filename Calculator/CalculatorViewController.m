@@ -132,6 +132,13 @@
     self.testVariableValues = nil;
     [self calculate];
 }
+- (IBAction)undoPressed {
+    [self backspacePressed];
+    if (![self userIsInTheMiddleOfEnteringANumber]) {
+        [self.brain pop];
+        [self calculate];
+    }
+}
 
 - (void)viewDidUnload {
     [self setHistory:nil];
