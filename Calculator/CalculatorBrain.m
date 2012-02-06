@@ -128,6 +128,7 @@ static NSDictionary *_operations = nil;
 }
 
 + (double)popOperandOffProgramStack:(NSMutableArray *)stack
+                 withVariableValues:(NSDictionary *)variableValues
 {
     double result = 0;
     
@@ -142,27 +143,29 @@ static NSDictionary *_operations = nil;
     {
         NSString *operation = topOfStack;
         if ([operation isEqualToString:@"+"]) {
-            result = [self popOperandOffProgramStack:stack] +
-            [self popOperandOffProgramStack:stack];
+            result = [self popOperandOffProgramStack:stack withVariableValues:variableValues] +
+            [self popOperandOffProgramStack:stack withVariableValues:variableValues];
         } else if ([@"*" isEqualToString:operation]) {
-            result = [self popOperandOffProgramStack:stack] *
-            [self popOperandOffProgramStack:stack];
+            result = [self popOperandOffProgramStack:stack withVariableValues:variableValues] *
+            [self popOperandOffProgramStack:stack withVariableValues:variableValues];
         } else if ([operation isEqualToString:@"-"]) {
-            double subtrahend = [self popOperandOffProgramStack:stack];
-            result = [self popOperandOffProgramStack:stack] - subtrahend;
+            double subtrahend = [self popOperandOffProgramStack:stack withVariableValues:variableValues];
+            result = [self popOperandOffProgramStack:stack withVariableValues:variableValues] - subtrahend;
         } else if ([operation isEqualToString:@"/"]) {
-            double divisor = [self popOperandOffProgramStack:stack];
-            if (divisor) result = [self popOperandOffProgramStack:stack] / divisor;
+            double divisor = [self popOperandOffProgramStack:stack withVariableValues:variableValues];
+            if (divisor) result = [self popOperandOffProgramStack:stack withVariableValues:variableValues] / divisor;
         } else if ([operation isEqualToString:@"sin"]) {
-            result = sin([self popOperandOffProgramStack:stack]);
+            result = sin([self popOperandOffProgramStack:stack withVariableValues:variableValues]);
         } else if ([operation isEqualToString:@"cos"]) {
-            result = cos([self popOperandOffProgramStack:stack]);
+            result = cos([self popOperandOffProgramStack:stack withVariableValues:variableValues]);
         } else if ([operation isEqualToString:@"sqrt"]) {
-            double operand = [self popOperandOffProgramStack:stack];
+            double operand = [self popOperandOffProgramStack:stack withVariableValues:variableValues];
             if (operand >= 0)
                 result = sqrt(operand);
         } else if ([operation isEqualToString:@"π"]) {
             result = M_PI;
+        } else {
+            result = [[variableValues objectForKey:operation] doubleValue];
         }
     }
     
@@ -180,7 +183,7 @@ static NSDictionary *_operations = nil;
     if ([program isKindOfClass:[NSArray class]]) {
         stack = [program mutableCopy];
     }
-    return [self popOperandOffProgramStack:stack];
+    return [self popOperandOffProgramStack:stack withVariableValues:variableValues];
 }
 
 + (NSSet *)variablesUsedInProgram:(id)program
