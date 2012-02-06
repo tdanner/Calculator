@@ -35,7 +35,11 @@
 - (void)calculate {
     self.history.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
     self.userIsInTheMiddleOfEnteringANumber = NO;
-    self.display.text = [NSString stringWithFormat:@"%g", [CalculatorBrain runProgram:self.brain.program usingVariableValues:self.testVariableValues]];
+    id result = [CalculatorBrain runProgram:self.brain.program usingVariableValues:self.testVariableValues];
+    if ([result isKindOfClass:[NSNumber class]])
+        self.display.text = [NSString stringWithFormat:@"%g", [result doubleValue]];
+    else
+        self.display.text = [result description];
 
     NSSet *variablesUsed = [CalculatorBrain variablesUsedInProgram:self.brain.program];
     NSString *varDesc = @"";

@@ -121,13 +121,13 @@ static NSDictionary *_operations = nil;
     [self.programStack addObject:variableName];
 }
 
-- (double)performOperation:(NSString *)operation
+- (id)performOperation:(NSString *)operation
 {
     [self.programStack addObject:operation];
     return [[self class] runProgram:self.program];
 }
 
-+ (double)popOperandOffProgramStack:(NSMutableArray *)stack
++ (id)popOperandOffProgramStack:(NSMutableArray *)stack
                  withVariableValues:(NSDictionary *)variableValues
 {
     double result = 0;
@@ -142,42 +142,56 @@ static NSDictionary *_operations = nil;
     else if ([topOfStack isKindOfClass:[NSString class]])
     {
         NSString *operation = topOfStack;
+        int operandCount = [[self.operations objectForKey:operation] intValue];
+        NSMutableArray *operands = [[NSMutableArray alloc] init];
+        for (int i = 0; i < operandCount; ++i) {
+            id operand = [self popOperandOffProgramStack:stack withVariableValues:variableValues];
+            if ([operand isKindOfClass:[NSString class]])
+                return operand;
+            if (operand == nil)
+                return @"Insufficient operands.";
+            [operands addObject:operand];
+        }
+        
         if ([operation isEqualToString:@"+"]) {
-            result = [self popOperandOffProgramStack:stack withVariableValues:variableValues] +
-            [self popOperandOffProgramStack:stack withVariableValues:variableValues];
-        } else if ([@"*" isEqualToString:operation]) {
-            result = [self popOperandOffProgramStack:stack withVariableValues:variableValues] *
-            [self popOperandOffProgramStack:stack withVariableValues:variableValues];
+            result = [[operands objectAtIndex:0] doubleValue] + [[operands objectAtIndex:1] doubleValue];
+        } else if ([operation isEqualToString:@"*"]) {
+            result = [[operands objectAtIndex:0] doubleValue] * [[operands objectAtIndex:1] doubleValue];
         } else if ([operation isEqualToString:@"-"]) {
-            double subtrahend = [self popOperandOffProgramStack:stack withVariableValues:variableValues];
-            result = [self popOperandOffProgramStack:stack withVariableValues:variableValues] - subtrahend;
+            result = [[operands objectAtIndex:1] doubleValue] - [[operands objectAtIndex:0] doubleValue];
         } else if ([operation isEqualToString:@"/"]) {
-            double divisor = [self popOperandOffProgramStack:stack withVariableValues:variableValues];
-            if (divisor) result = [self popOperandOffProgramStack:stack withVariableValues:variableValues] / divisor;
+            double divisor = [[operands objectAtIndex:0] doubleValue];
+            if (divisor == 0.0) {
+                return @"Division by zero.";
+            }
+            result = [[operands objectAtIndex:1] doubleValue] / divisor;
         } else if ([operation isEqualToString:@"sin"]) {
-            result = sin([self popOperandOffProgramStack:stack withVariableValues:variableValues]);
+            result = sin([[operands objectAtIndex:0] doubleValue]);
         } else if ([operation isEqualToString:@"cos"]) {
-            result = cos([self popOperandOffProgramStack:stack withVariableValues:variableValues]);
+            result = cos([[operands objectAtIndex:0] doubleValue]);
         } else if ([operation isEqualToString:@"sqrt"]) {
-            double operand = [self popOperandOffProgramStack:stack withVariableValues:variableValues];
-            if (operand >= 0)
-                result = sqrt(operand);
+            double operand = [[operands objectAtIndex:0] doubleValue];
+            if (operand < 0.0)
+                return @"Imaginary result.";
+            result = sqrt(operand);
         } else if ([operation isEqualToString:@"π"]) {
             result = M_PI;
         } else {
             result = [[variableValues objectForKey:operation] doubleValue];
         }
+    } else {
+        return nil;
     }
     
-    return result;
+    return [NSNumber numberWithDouble:result];
 }
 
-+ (double)runProgram:(id)program
++ (id)runProgram:(id)program
 {
     return [self runProgram:program usingVariableValues:nil];
 }
 
-+ (double)runProgram:(id)program usingVariableValues:(NSDictionary *)variableValues
++ (id)runProgram:(id)program usingVariableValues:(NSDictionary *)variableValues
 {
     NSMutableArray *stack;
     if ([program isKindOfClass:[NSArray class]]) {
