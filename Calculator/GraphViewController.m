@@ -35,7 +35,7 @@
 }
 
 - (float)yForX:(float)x {
-    return x;
+    return [[CalculatorBrain runProgram:self.function usingVariableValues:[NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:x] forKey:@"x"]] floatValue];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

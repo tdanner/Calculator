@@ -16,8 +16,8 @@
 
 @interface GraphView : UIView
 
-@property CGFloat scale;
-@property CGPoint origin;
+@property (nonatomic) CGFloat scale;
+@property (nonatomic) CGPoint origin;
 @property (weak, nonatomic) id <GraphDelegate> graphDelegate;
 
 - (void)pinch:(UIPinchGestureRecognizer *)recognizer;

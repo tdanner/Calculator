@@ -22,7 +22,6 @@
 
 @synthesize display = _display;
 @synthesize history = _history;
-@synthesize variableDisplay = _variableDisplay;
 @synthesize userIsInTheMiddleOfEnteringANumber = _userIsInTheMiddleOfEnteringANumber;
 @synthesize brain = _brain;
 @synthesize testVariableValues = _testVariableValues;
@@ -47,7 +46,6 @@
     for (NSString *var in variablesUsed) {
         varDesc = [varDesc stringByAppendingFormat:@"%@ = %g  ", var, [[self.testVariableValues objectForKey:var] doubleValue]];
     }
-    self.variableDisplay.text = varDesc;    
 }
 
 - (IBAction)backspacePressed {
@@ -125,18 +123,6 @@
     [self calculate];
 }
 
-- (IBAction)test1Pressed {
-    [self setVariableValuesX:1.0 a:0.0 b:1e5];
-}
-
-- (IBAction)test2Pressed {
-    [self setVariableValuesX:-1.0 a:2.5 b:9.0];
-}
-
-- (IBAction)test3Pressed {
-    self.testVariableValues = nil;
-    [self calculate];
-}
 - (IBAction)undoPressed {
     [self backspacePressed];
     if (![self userIsInTheMiddleOfEnteringANumber]) {
@@ -147,7 +133,6 @@
 
 - (void)viewDidUnload {
     [self setHistory:nil];
-    [self setVariableDisplay:nil];
     [super viewDidUnload];
 }
 

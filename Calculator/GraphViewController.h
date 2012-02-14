@@ -10,6 +10,6 @@
 #import "GraphView.h"
 
 @interface GraphViewController : UIViewController <GraphDelegate>
-@property (weak, nonatomic) id function;
+@property (strong, nonatomic) id function;
 @property (weak, nonatomic) IBOutlet GraphView *graphView;
 @end
