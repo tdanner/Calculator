@@ -8,6 +8,7 @@
 
 #import "CalculatorViewController.h"
 #import "CalculatorBrain.h"
+#import "GraphViewController.h"
 
 #define contains(str1, str2) ([str1 rangeOfString: str2 ].location != NSNotFound)
 
@@ -148,5 +149,12 @@
     [self setHistory:nil];
     [self setVariableDisplay:nil];
     [super viewDidUnload];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"GraphProgram"]) {
+        GraphViewController *graphViewController = segue.destinationViewController;
+        graphViewController.function = self.brain.program;
+    }
 }
 @end

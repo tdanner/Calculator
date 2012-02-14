@@ -16,6 +16,8 @@
 		221921F314D26B5200BD2027 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 221921F114D26B5200BD2027 /* MainStoryboard.storyboard */; };
 		221921F614D26B5200BD2027 /* CalculatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 221921F514D26B5200BD2027 /* CalculatorViewController.m */; };
 		2245675414D36FAC000585F6 /* CalculatorBrain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2245675314D36FAC000585F6 /* CalculatorBrain.m */; };
+		225924B014EA143000B30DB9 /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 225924AE14EA143000B30DB9 /* GraphViewController.m */; };
+		225924B514EA161200B30DB9 /* GraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 225924B414EA161200B30DB9 /* GraphView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,10 @@
 		221921F514D26B5200BD2027 /* CalculatorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CalculatorViewController.m; sourceTree = "<group>"; };
 		2245675214D36FAC000585F6 /* CalculatorBrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalculatorBrain.h; sourceTree = "<group>"; };
 		2245675314D36FAC000585F6 /* CalculatorBrain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalculatorBrain.m; sourceTree = "<group>"; };
+		225924AD14EA143000B30DB9 /* GraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; path = GraphViewController.h; sourceTree = "<group>"; };
+		225924AE14EA143000B30DB9 /* GraphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphViewController.m; sourceTree = "<group>"; };
+		225924B314EA161200B30DB9 /* GraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphView.h; sourceTree = "<group>"; };
+		225924B414EA161200B30DB9 /* GraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,8 +91,12 @@
 				221921EE14D26B5200BD2027 /* CalculatorAppDelegate.h */,
 				221921EF14D26B5200BD2027 /* CalculatorAppDelegate.m */,
 				221921F114D26B5200BD2027 /* MainStoryboard.storyboard */,
+				225924AD14EA143000B30DB9 /* GraphViewController.h */,
+				225924AE14EA143000B30DB9 /* GraphViewController.m */,
 				221921F414D26B5200BD2027 /* CalculatorViewController.h */,
 				221921F514D26B5200BD2027 /* CalculatorViewController.m */,
+				225924B314EA161200B30DB9 /* GraphView.h */,
+				225924B414EA161200B30DB9 /* GraphView.m */,
 				221921E614D26B5200BD2027 /* Supporting Files */,
 			);
 			path = Calculator;
@@ -169,6 +179,8 @@
 				221921F014D26B5200BD2027 /* CalculatorAppDelegate.m in Sources */,
 				221921F614D26B5200BD2027 /* CalculatorViewController.m in Sources */,
 				2245675414D36FAC000585F6 /* CalculatorBrain.m in Sources */,
+				225924B014EA143000B30DB9 /* GraphViewController.m in Sources */,
+				225924B514EA161200B30DB9 /* GraphView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
