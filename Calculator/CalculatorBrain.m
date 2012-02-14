@@ -31,8 +31,8 @@ static NSDictionary *_operations = nil;
         _operations = [NSDictionary dictionaryWithObjectsAndKeys:
                        [NSNumber numberWithInt:2], @"+", 
                        [NSNumber numberWithInt:2], @"-", 
-                       [NSNumber numberWithInt:2], @"*", 
-                       [NSNumber numberWithInt:2], @"/", 
+                       [NSNumber numberWithInt:2], @"×", 
+                       [NSNumber numberWithInt:2], @"÷", 
                        [NSNumber numberWithInt:1], @"sin", 
                        [NSNumber numberWithInt:1], @"cos", 
                        [NSNumber numberWithInt:1], @"sqrt", 
@@ -155,11 +155,11 @@ static NSDictionary *_operations = nil;
         
         if ([operation isEqualToString:@"+"]) {
             result = [[operands objectAtIndex:0] doubleValue] + [[operands objectAtIndex:1] doubleValue];
-        } else if ([operation isEqualToString:@"*"]) {
+        } else if ([operation isEqualToString:@"×"]) {
             result = [[operands objectAtIndex:0] doubleValue] * [[operands objectAtIndex:1] doubleValue];
         } else if ([operation isEqualToString:@"-"]) {
             result = [[operands objectAtIndex:1] doubleValue] - [[operands objectAtIndex:0] doubleValue];
-        } else if ([operation isEqualToString:@"/"]) {
+        } else if ([operation isEqualToString:@"÷"]) {
             double divisor = [[operands objectAtIndex:0] doubleValue];
             if (divisor == 0.0) {
                 return @"Division by zero.";
