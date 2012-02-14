@@ -12,10 +12,26 @@
 @implementation GraphViewController
 
 @synthesize function = _function;
+@synthesize graphView = _graphView;
 
 - (void)setFunction:(id)function {
     _function = function;
     self.title = [CalculatorBrain descriptionOfProgram:function];
+}
+
+- (void)setGraphView:(GraphView *)graphView {
+    _graphView = graphView;
+    self.graphView.graphDelegate = self;
+    
+    UIPinchGestureRecognizer *pinchGR = [[UIPinchGestureRecognizer alloc] initWithTarget:self.graphView action:@selector(pinch:)];
+    [self.graphView addGestureRecognizer:pinchGR];
+    
+    UIPanGestureRecognizer *panGR = [[UIPanGestureRecognizer alloc] initWithTarget:self.graphView action:@selector(pan:)];
+    [self.graphView addGestureRecognizer:panGR];
+    
+    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc] initWithTarget:self.graphView action:@selector(tap:)];
+    tapGR.numberOfTapsRequired = 3;
+    [self.graphView addGestureRecognizer:tapGR];
 }
 
 - (float)yForX:(float)x {
@@ -28,4 +44,8 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (void)viewDidUnload {
+    [self setGraphView:nil];
+    [super viewDidUnload];
+}
 @end
